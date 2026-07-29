@@ -1,0 +1,7 @@
+# Normalize line endings so the repo stores LF regardless of the OS that
+# committed. Without this, Windows checkouts commit CRLF and every file shows
+# as fully rewritten in diffs made from another machine.
+* text=auto eol=lf
+
+# Lockfiles are generated — collapse them in diffs and PR reviews.
+package-lock.json linguist-generated=true -diff
