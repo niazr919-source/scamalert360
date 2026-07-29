@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Offset for the sticky header when jumping to a heading anchor. */
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    @apply bg-white text-navy-800 antialiased dark:bg-navy-900 dark:text-navy-200;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    @apply bg-emerald/25 text-navy-900 dark:text-white;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-emerald ring-offset-2 ring-offset-white dark:ring-offset-navy-900;
+  }
+}
+
+@layer components {
+  /*
+   * Ad containers reserve their height up front so that a slow-loading ad
+   * network never pushes content down. This is the single biggest source of
+   * Cumulative Layout Shift on ad-supported sites.
+   */
+  .ad-slot {
+    @apply relative flex w-full items-center justify-center overflow-hidden rounded-xl border border-dashed border-navy-200 bg-navy-50/70 dark:border-navy-700 dark:bg-navy-800/40;
+  }
+
+  .ad-slot::after {
+    content: 'Advertisement';
+    @apply pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none text-[11px] font-medium uppercase tracking-[0.18em] text-navy-400 dark:text-navy-500;
+  }
+
+  .ad-slot:has(> *:not(:empty))::after {
+    content: none;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
