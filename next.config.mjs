@@ -2,29 +2,36 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  compress: true,
 
   /*
-   * Static HTML export — required for Hostinger shared hosting, which serves
-   * plain files via Apache and does not keep a Node process running. `next
-   * start` and API route handlers do not work there; this produces an `out/`
-   * folder of plain HTML/CSS/JS you upload as-is.
+   * Hostinger's Git-connected hosting for this project (per the "Framework:
+   * Next.js" / "Node version: 22.x" dashboard) runs a real Node process and
+   * builds Next.js natively — it is not the classic Apache/public_html
+   * shared hosting that a static export targets. So this stays a normal
+   * server build: `next build` + `next start`, with API routes, `headers()`,
+   * and the standard image pipeline all working as usual.
    *
-   * Two features that need a live server are unavailable in this mode:
-   *   - `headers()` below (security headers) — moved to public/.htaccess.
-   *   - app/api/contact/route.ts — replaced by public/contact.php.
-   * If you later move to a Node-capable host (Vercel, a VPS), both of those
-   * are worth restoring; see README.md.
+   * If a *different* Hostinger plan (classic hPanel shared hosting) is ever
+   * used instead, see the "Static export" section of README.md — the repo
+   * history (commit "Rebrand to ScamAlert360 and convert to static export
+   * for Hostinger") has the output:'export' config to revive.
    */
-  output: 'export',
-
-  // Every route resolves to a folder + index.html (e.g. /about-us/index.html),
-  // which Apache serves automatically for a directory request. No rewrite
-  // rules are needed for clean URLs with this setting.
-  trailingSlash: true,
-
   images: {
-    // The static export has no server-side image optimizer to call.
-    unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+        ],
+      },
+    ];
   },
 };
 

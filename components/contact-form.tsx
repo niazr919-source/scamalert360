@@ -74,8 +74,6 @@ export function ContactForm() {
     setServerError('');
 
     try {
-      // The site is a static export with no Node server, so this posts to a
-      // PHP handler (public/contact.php) rather than a Next.js API route.
       const response = await fetch(site.contactEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -3,8 +3,8 @@ import { articles, articleHref } from '@/content';
 import { categories } from '@/content/categories';
 import { site } from '@/lib/site';
 
-// Required for `output: 'export'` — metadata routes need an explicit static
-// marker in this Next.js version or the export build fails.
+// Content only changes when a new guide is published, not per-request, so
+// this is generated once at build time rather than on every crawl.
 export const dynamic = 'force-static';
 
 const STATIC_PAGES: { path: string; priority: number; changeFrequency: 'daily' | 'weekly' | 'monthly' | 'yearly' }[] = [

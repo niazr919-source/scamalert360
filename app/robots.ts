@@ -1,19 +1,13 @@
 import type { MetadataRoute } from 'next';
 import { site } from '@/lib/site';
 
-// Required for `output: 'export'` — metadata routes need an explicit static
-// marker in this Next.js version or the export build fails.
-export const dynamic = 'force-static';
-
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        // The former /api/contact route is gone — contact.php is a plain
-        // PHP script with no crawl-worthy content, so nothing needs
-        // disallowing here anymore.
         userAgent: '*',
         allow: '/',
+        disallow: ['/api/'],
       },
       {
         // Explicitly welcomed — AdSense needs to crawl pages to serve

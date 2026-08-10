@@ -2,19 +2,19 @@
 
 A scam awareness and fraud prevention portal built with Next.js (App Router), TypeScript and Tailwind CSS. Built for ad-network approval and organic search, with attention to YMYL and E-E-A-T requirements.
 
-Ships as a **static HTML export** for Hostinger shared hosting — see [DEPLOY.md](DEPLOY.md) for the upload steps.
+Deployed on Hostinger's Git-connected Node hosting (auto-deploys on push to `main`) — see [DEPLOY.md](DEPLOY.md) for how that works and what to check if a deploy doesn't go live.
 
 ```bash
 npm install
 npm run dev     # http://localhost:3000
-npm run build   # produces out/ — a static export, ready to upload
-npx serve out   # preview the export exactly as it will be served
+npm run build   # production build (.next/)
+npm start       # serve the build, same as Hostinger runs in production
 npm run typecheck
 ```
 
 ## What's here
 
-32 routes, all statically generated — there is no server-rendered route in this build (see "Static export" below for why).
+32 routes: 31 statically generated at build time, plus one dynamic server route (`/api/contact`) that needs a live Node process — which is exactly what Hostinger's hosting here provides.
 
 | Area | Route | Notes |
 | --- | --- | --- |
@@ -26,7 +26,7 @@ npm run typecheck
 | Reporting | `/report-a-scam` | Official agency channels + 24h timeline |
 | E-E-A-T | `/about-us`, `/editorial-policy` | Standards, sourcing, conflict of interest |
 | Legal | `/privacy-policy`, `/terms-of-service` | GDPR/CCPA, educational-content disclaimer |
-| Contact | `/contact` | Validated form → `public/contact.php` (PHP, not a Next.js API route) |
+| Contact | `/contact` | Validated form → `app/api/contact/route.ts` |
 
 ### Guides and their primary keyword targets
 
@@ -46,16 +46,13 @@ npm run typecheck
 | Facebook Marketplace scams | everyday | facebook marketplace scam, google voice code scam |
 | Fake remote job & check scams | everyday | remote job check scam, fake check deposit fraud |
 
-## Static export — why, and what it costs
+## Deployment model
 
-`next.config.mjs` sets `output: 'export'` because Hostinger shared hosting serves plain files via Apache and doesn't keep a Node process running — `next start` and API route handlers don't work there. `npm run build` produces a self-contained `out/` folder instead.
+This is a standard Next.js server build (`next build` + `next start`) — nothing platform-specific. Hostinger's Git-connected hosting for this project runs that build itself on every push to `main`; see [DEPLOY.md](DEPLOY.md).
 
-Two things a normal Next.js deploy gets for free had to move elsewhere as a result:
+The contact form posts to `site.contactEndpoint` (`/api/contact`, set in `lib/site.ts`) rather than being hardcoded in the component, so it's a one-line change if the endpoint ever needs to move.
 
-- **Security headers.** `next.config.mjs`'s `headers()` needs a live server to run, so they're now set in `public/.htaccess` instead (HTTPS redirect, `X-Frame-Options`, etc.), which gets copied into `out/` on every build.
-- **The contact form's backend.** `app/api/contact/route.ts` is gone — static exports can't include Node route handlers. `public/contact.php` reproduces the same validation, honeypot and rate-limiting logic in PHP, which Hostinger can execute. `components/contact-form.tsx` posts to `site.contactEndpoint` (`/contact.php`, set in `lib/site.ts`) instead of `/api/contact`.
-
-If you ever move to a Node-capable host (a VPS, Vercel), both are easy to restore — see the bottom of [DEPLOY.md](DEPLOY.md).
+> An earlier version of this project targeted Apache/`public_html` shared hosting and shipped as a static export (`output: 'export'`, a `.htaccess` file, a PHP contact handler). That was built for the wrong assumption about the hosting type and has been reverted — the actual host runs Next.js natively. That approach is still in the git history (commit "Rebrand to ScamAlert360 and convert to static export for Hostinger") if a genuinely static host is ever used instead.
 
 ## Authorship — read before adding contributors
 
@@ -107,12 +104,13 @@ Injection logic is in `components/article-body.tsx`. Two guards keep placement c
 
 ## Before applying to ad networks
 
-1. **Deploy to scamalert360.com.** You can't apply from localhost — see [DEPLOY.md](DEPLOY.md). `lib/site.ts` already points at the domain; canonicals, sitemap and schema derive from it.
+1. **Get scamalert360.com actually live.** You can't apply from localhost. `lib/site.ts` already points at the domain; canonicals, sitemap and schema derive from it. See [DEPLOY.md](DEPLOY.md) for what to check if the site isn't reachable yet (SSL provisioning, DNS, domain review holds).
 2. **Add yourself as a named author** (see Authorship above). Highest-value single change.
 3. **Legal review.** `/privacy-policy` and `/terms-of-service` carry template notices. Have counsel review, and update the ad networks named in the privacy policy to match what you actually run.
-4. **Confirm the contact form actually delivers mail.** `public/contact.php` uses PHP's `mail()`, which is frequently unreliable on shared hosting — test it for real after deploying and check spam. A commented SMTP fallback is in the file.
+4. **Wire real email delivery.** `app/api/contact/route.ts` currently logs submissions instead of sending them — there's a commented example using Resend. Add the provider's API key as an environment variable in the Hostinger dashboard.
 5. **Consent banner** before serving ads in the EU/EEA/UK — the privacy policy already commits to one.
 6. **Submit the sitemap** to Google Search Console and let the site get indexed. New domains get more scrutiny; a few weeks of history helps.
+7. **Shared rate-limit store** (Redis/Upstash) if the platform ever scales to multiple instances — the current limiter in `app/api/contact/route.ts` is in-memory and per-instance.
 
 ### Realistic platform expectations
 
@@ -128,8 +126,9 @@ Deep navy slate `#0F172A`, emerald `#10B981`, crimson `#EF4444`. Inter (body) an
 
 ## Verified
 
-- `npm run build` — 32 pages exported to `out/`, zero errors; `tsc --noEmit` clean.
-- Static export served with `npx serve out`: all key routes (including the Suspense-wrapped risk checker) resolve 200, unknown paths 404 via the custom error page.
+- `npm run build` — 32 routes, zero errors; `tsc --noEmit` clean.
+- `npm start` (the same command Hostinger runs) serves all key routes at 200, `/api/contact` returns `{"ok":true}` on a valid POST, unknown paths 404.
+- Security headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`) confirmed present on live responses via `next.config.mjs`'s `headers()`.
 - Sitemap (26 URLs) and robots.txt correctly reference `scamalert360.com`; no leftover references to any prior domain.
 - Article word counts 1,668–2,909.
 - No `hasCredential` claims anywhere in emitted schema; article author is `Organization`.

@@ -12,12 +12,10 @@ export const site = {
   publisher: 'ScamAlert360',
   twitter: '@scamalert360',
   /**
-   * Contact form endpoint. The site is exported as static HTML for shared
-   * hosting, so there is no Node route handler — this points at a small PHP
-   * script served from the same domain. Swap for a hosted form service
-   * (Web3Forms, Formspree) by changing this one value.
+   * Contact form endpoint. The host runs a real Next.js server, so this is
+   * the app's own API route rather than a static-hosting workaround.
    */
-  contactEndpoint: '/contact.php',
+  contactEndpoint: '/api/contact',
 } as const;
 
 export type NavLink = { href: string; label: string };

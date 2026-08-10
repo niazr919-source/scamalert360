@@ -1,115 +1,101 @@
-# Deploying ScamAlert360 to Hostinger shared hosting
+# Deploying ScamAlert360 on Hostinger
 
-This project builds to a **static HTML export** (`output: 'export'` in
-`next.config.mjs`) because Hostinger's shared plans serve files via Apache
-and don't keep a Node process running — `next start` and API routes don't
-work there. The build produces a self-contained `out/` folder you upload
-as-is.
+Your Hostinger dashboard (Website → scamalert360.com) shows **Connected
+with GitHub**, **Auto-deployment**, **Framework: Next.js**, **Node version:
+22.x** — this is Hostinger's Git-integrated Node app hosting, which builds
+and runs Next.js directly (similar in spirit to Vercel). It is **not**
+classic `public_html`/Apache shared hosting, so none of that applies here:
+no static export, no `.htaccess`, no PHP contact handler. The app runs as a
+normal Next.js server — `next build` then `next start` — and Hostinger's
+platform does that for you on every push to `main`.
 
-## What changed to make this work
+## How deploys work
 
-- `next.config.mjs` sets `output: 'export'` and `trailingSlash: true`. Every
-  page becomes `<route>/index.html`, which Apache serves automatically for a
-  directory request — no rewrite rules needed for clean URLs.
-- The old `app/api/contact/route.ts` (a Node route handler) is gone — static
-  exports can't include those. Its job is now done by **`public/contact.php`**,
-  which ships the same validation, honeypot and rate-limiting logic and gets
-  copied into `out/contact.php` on every build.
-- `components/contact-form.tsx` posts to `site.contactEndpoint` (`/contact.php`
-  by default, set in `lib/site.ts`) instead of `/api/contact`.
-- Security headers that used to come from `next.config.mjs`'s `headers()`
-  (not supported in export mode — there's no server to run that hook) now
-  live in **`public/.htaccess`**, along with the HTTPS redirect, the custom
-  404, and static-asset caching.
+1. Push to the `main` branch of the connected repo.
+2. Hostinger's dashboard picks it up automatically ("Auto-deployment") and
+   runs `npm install && npm run build`, then starts the app with
+   `npm run start` (the "Build and output settings: Default" shown on the
+   dashboard maps to the `build`/`start` scripts in `package.json` — don't
+   rename those).
+3. Progress shows under **Deployments** → **Last deployment**; **Logs: View**
+   is where build or runtime errors actually show up if something fails.
+4. **Redeploy** re-runs the same build without a new push — useful after
+   changing an environment variable, which doesn't itself trigger a deploy.
 
-## One-time setup
+There is nothing to upload by hand. If you ever used `npm run build` locally
+expecting an `out/` folder to drag into a file manager — that was the
+static-export path from an earlier, incorrect assumption about the hosting
+type. It's not needed here.
 
-**1. Confirm the contact inbox.** Open `public/contact.php` and check the
-`$recipientEmail` value near the top matches a real mailbox on your domain.
+## Checklist for a working deployment
 
-**2. Build:**
+**1. Confirm the connected repository and branch.** The dashboard should
+show the repo this project is pushed to, branch `main`. If "Repository"
+doesn't match where you actually push, deploys will silently keep serving
+old code.
 
-```bash
-npm install
-npm run build
-```
+**2. Environment variables.** None are required for the app to build and
+run as shipped — `lib/site.ts` hardcodes the production values rather than
+reading from `process.env`. If you wire up real email delivery in
+`app/api/contact/route.ts` (see the comment block there for a Resend
+example), add the provider's API key under **Environment variables** in the
+dashboard, then hit **Redeploy** so the running process picks it up.
 
-This produces `out/`. Verify it locally before uploading:
+**3. SSL.** The dashboard's SSL indicator needs to go green before HTTPS
+works. This is normal right after connecting a fresh domain and can take
+anywhere from minutes to a few hours — Hostinger has to validate domain
+ownership before issuing the certificate. If it's still pending after 24
+hours, that's worth a support ticket.
 
-```bash
-npx serve out
-```
+**4. DNS.** `scamalert360.com` needs to resolve to Hostinger's servers for
+any of this to be reachable. If you bought the domain through Hostinger and
+attached it in this same dashboard, DNS is usually handled automatically —
+check **Domains → Manage domain** to confirm the A/AAAA records point at
+Hostinger's IPs, not somewhere else.
 
-Visit the printed URL and click through a few pages — home, a guide, the
-risk checker, `/contact`.
+**5. The domain security review.** Newly registered or newly connected
+domains sometimes get held for a manual or automated review before they're
+allowed to go fully live. If yours was flagged for "security
+vulnerabilities," get the exact wording from the notice — the fix is
+different depending on what triggered it:
 
-## Uploading to Hostinger
-
-**Option A — hPanel File Manager (simplest, no Git needed)**
-
-1. In hPanel, go to **Files → File Manager** and open `public_html` for
-   `scamalert360.com`.
-2. Delete Hostinger's default placeholder files if any exist there.
-3. Upload **the contents of `out/`** — not the `out` folder itself — so
-   `index.html` sits directly inside `public_html`. Hostinger's File Manager
-   can upload a zip and extract it in place, which is faster than uploading
-   dozens of files individually: zip the contents of `out/`, upload the zip,
-   extract it, delete the zip.
-4. Confirm `.htaccess` made it across — File Manager hides dotfiles by
-   default; toggle "Show Hidden Files" to check.
-
-**Option B — Git-based deploy (hPanel → Git)**
-
-Hostinger's Git deploy pulls a repo but does **not** run a build step, so it
-can only serve what's already committed — and `out/` is gitignored (build
-artifacts don't belong in version control). Two ways to handle that:
-
-- Build locally (`npm run build`) and use hPanel's Git deploy against a
-  **separate, un-ignored branch or repo** containing only the `out/`
-  contents, pushed after each build. More moving parts, but keeps the main
-  repo clean.
-- Or just use Option A after each `npm run build` — for a content site that
-  doesn't change every hour, this is genuinely simpler.
-
-**Option C — FTP**, if you prefer a client like FileZilla: point it at the
-credentials in hPanel → Files → FTP Accounts, and upload `out/`'s contents to
-`public_html`.
-
-## After the first upload
-
-1. **SSL** — hPanel → **SSL** → issue a free Let's Encrypt certificate for
-   `scamalert360.com`. The `.htaccess` HTTPS redirect assumes this exists;
-   without it, visitors get redirect errors.
-2. **Test the contact form for real** — local `npx serve` can't execute PHP,
-   so this is the first point it can actually be verified. Submit it and
-   confirm the email arrives. Shared-hosting `mail()` is notoriously
-   unreliable; if nothing shows up (check spam too), switch to SMTP — there's
-   a commented PHPMailer block at the bottom of `public/contact.php`.
-3. **Submit the sitemap** — Google Search Console → Sitemaps →
-   `https://scamalert360.com/sitemap.xml`.
-4. **Spot-check indexability** — `https://scamalert360.com/robots.txt` should
-   show `Allow: /`, and view-source on a guide page should show the
-   `<link rel="canonical">` pointing at `scamalert360.com`, not any prior
-   domain.
+   - **Registrar identity/abuse verification** (common on new `.com`
+     registrations, unrelated to your content) — usually resolves once you
+     confirm your registrant email, no code change needed.
+   - **Automated content scanner false-positive** — plausible here
+     specifically, because this is a fraud-awareness site whose entire
+     purpose is to describe scam tactics in detail. A scanner pattern-matching
+     for phishing-adjacent language ("verify your account", "urgent",
+     "gift card", bank names) can flag legitimate anti-scam content. If this
+     is the cause, it typically needs a manual appeal/review request through
+     Hostinger support explaining the site's actual purpose — not a code fix.
+   - **A real flagged vulnerability in the app itself** — worth ruling out
+     explicitly. Nothing in this codebase collects credentials, executes
+     user-supplied code, or embeds third-party scripts beyond the commented
+     (currently inactive) AdSense loader in `app/layout.tsx`. If Hostinger's
+     scanner names a specific issue, share the exact text and it can be
+     addressed directly.
 
 ## Redeploying after content changes
 
 ```bash
-npm run build
+git add -A
+git commit -m "your message"
+git push
 ```
 
-Then repeat whichever upload option you used. There's no cache to bust on
-the HTML itself — only the hashed `_next/static` assets are cached long-term
-by `.htaccess`, and their filenames change automatically whenever their
-content does.
+That's the entire redeploy — Hostinger's auto-deployment takes it from
+there. Use `npm run build` locally first if you want to catch build errors
+before they show up in Hostinger's deploy logs.
 
-## If you outgrow shared hosting
+## If this ever needs to move to different hosting
 
-The API route and `headers()` config are easy to restore if you ever move to
-a Node-capable host (a Hostinger VPS, Vercel, Railway): drop `output: 'export'`
-and `trailingSlash: true` from `next.config.mjs`, restore the `headers()`
-block, and recreate `app/api/contact/route.ts` from `public/contact.php`'s
-logic (or just point `contactEndpoint` back at `/api/contact`). Vercel in
-particular needs none of this — it runs the Next.js server natively, so the
-static-export step becomes unnecessary if you deploy there instead while
-keeping the domain at Hostinger.
+Everything here is a standard Next.js app — no platform-specific code. It
+would run unchanged on Vercel, Railway, a VPS, or Hostinger's own Node
+hosting elsewhere. The one path that *would* need work is classic
+Apache/`public_html` shared hosting, which needs a static export instead of
+a running Node process; that conversion (`output: 'export'`, `.htaccess`,
+a PHP contact handler) was built once and is recoverable from the git
+history if it's ever needed — see the commit titled "Rebrand to ScamAlert360
+and convert to static export for Hostinger," and the revert commit right
+after it for what changed back.
