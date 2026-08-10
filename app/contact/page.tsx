@@ -7,7 +7,7 @@ import { Breadcrumbs, JsonLd } from '@/components/ui';
 import { pageGraph } from '@/lib/schema';
 import { site } from '@/lib/site';
 
-const title = 'Contact ScamAlert & Fraud Reporting Desk';
+const title = 'Contact ScamAlert360 & Fraud Reporting Desk';
 const description =
   'Report a scam you encountered, submit a correction, or reach our editorial team. Includes the official agency channels to use if you have lost money.';
 
@@ -55,7 +55,7 @@ export default function ContactPage() {
           If you have just lost money, do not wait for our reply
         </h2>
         <p className="mt-2 leading-relaxed text-navy-700 dark:text-navy-300">
-          ScamAlert is a publisher, not an emergency service or a recovery agency. We
+          ScamAlert360 is a publisher, not an emergency service or a recovery agency. We
           cannot contact your bank, freeze a transfer, or recover funds on your behalf. Speed
           matters enormously in the first hour, so act through official channels now:
         </p>

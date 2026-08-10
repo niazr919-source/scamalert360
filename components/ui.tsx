@@ -200,7 +200,7 @@ export function SourcesList({
         Sources &amp; further reading
       </h2>
       <p className="mt-2 text-sm text-navy-600 dark:text-navy-400">
-        Every guide on ScamAlert is checked against primary sources from US consumer
+        Every guide on ScamAlert360 is checked against primary sources from US consumer
         protection and law enforcement agencies.
       </p>
       <ol className="mt-4 space-y-2.5 text-[15px]">

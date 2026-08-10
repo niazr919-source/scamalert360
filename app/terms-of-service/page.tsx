@@ -7,7 +7,7 @@ import { site } from '@/lib/site';
 
 const title = 'Terms of Service';
 const description =
-  'The terms governing use of ScamAlert, including our educational-content disclaimer, no-professional-advice notice, and limitation of liability.';
+  'The terms governing use of ScamAlert360, including our educational-content disclaimer, no-professional-advice notice, and limitation of liability.';
 
 export const metadata: Metadata = {
   title,

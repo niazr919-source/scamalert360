@@ -51,7 +51,7 @@ export default function HomePage() {
               Recognize the scam. Recover the money. Report it properly.
             </h1>
             <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-navy-600 dark:text-navy-300">
-              ScamAlert publishes plain-English guides to the frauds actually targeting
+              ScamAlert360 publishes plain-English guides to the frauds actually targeting
               people right now — bank impersonation texts, fake delivery and toll
               notices, payment app traps, AI voice cloning and investment fraud. Every guide
               is checked against primary sources and includes a recovery timeline and the

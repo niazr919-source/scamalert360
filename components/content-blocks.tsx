@@ -247,7 +247,7 @@ export function ReportingButtons({
         })}
       </div>
       <p className="mt-3 text-xs text-navy-500 dark:text-navy-500">
-        These are official government resources. ScamAlert is not affiliated with any
+        These are official government resources. ScamAlert360 is not affiliated with any
         government agency and receives no compensation for these links.
       </p>
     </section>

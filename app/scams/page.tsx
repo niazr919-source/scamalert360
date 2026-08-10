@@ -10,7 +10,7 @@ import { site } from '@/lib/site';
 
 const title = 'All Scam Guides: Banking, Payments, AI and Everyday Fraud';
 const description =
-  'Every ScamAlert guide in one place — bank impersonation texts, P2P payment traps, AI voice cloning, QR code phishing, fake job checks and card skimming.';
+  'Every ScamAlert360 guide in one place — bank impersonation texts, P2P payment traps, AI voice cloning, QR code phishing, fake job checks and card skimming.';
 
 export const metadata: Metadata = {
   title,
@@ -37,7 +37,7 @@ export default function ScamsIndexPage() {
 
       <SectionHeading
         eyebrow={`${articles.length} guides`}
-        title="Every scam guide on ScamAlert"
+        title="Every scam guide on ScamAlert360"
         description="Grouped by how the fraud reaches you. Each guide explains the mechanism, the red flags, a recovery timeline, and where to report."
       />
 

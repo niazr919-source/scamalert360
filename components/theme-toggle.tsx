@@ -21,7 +21,7 @@ export function ThemeToggle() {
     const next = !document.documentElement.classList.contains('dark');
     document.documentElement.classList.toggle('dark', next);
     try {
-      localStorage.setItem('scamalert-theme', next ? 'dark' : 'light');
+      localStorage.setItem('scamalert360-theme', next ? 'dark' : 'light');
     } catch {
       // Private browsing or blocked storage — theme just won't persist.
     }

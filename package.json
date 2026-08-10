@@ -1,8 +1,8 @@
 {
-  "name": "scamalert-blog",
+  "name": "scamalert360",
   "version": "1.0.0",
   "private": true,
-  "description": "ScamAlert — scam awareness and fraud prevention portal (scamalert.blog)",
+  "description": "ScamAlert360 — scam awareness and fraud prevention portal (scamalert360.com)",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

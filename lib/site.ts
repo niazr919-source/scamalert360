@@ -1,16 +1,23 @@
 export const site = {
-  name: 'ScamAlert',
-  shortName: 'ScamAlert',
+  name: 'ScamAlert360',
+  shortName: 'ScamAlert360',
   tagline: 'Recognize the scam. Recover the money. Report it properly.',
   description:
     'Independent, primary-sourced guides to bank text scams, delivery and toll phishing, payment app traps, AI voice cloning and investment fraud — plus a free interactive Scam Risk Checker.',
-  url: 'https://scamalert.blog',
+  url: 'https://scamalert360.com',
   locale: 'en_US',
-  email: 'editor@scamalert.blog',
-  reportEmail: 'report@scamalert.blog',
+  email: 'editor@scamalert360.com',
+  reportEmail: 'report@scamalert360.com',
   founded: '2026',
-  publisher: 'ScamAlert',
-  twitter: '@scamalertblog',
+  publisher: 'ScamAlert360',
+  twitter: '@scamalert360',
+  /**
+   * Contact form endpoint. The site is exported as static HTML for shared
+   * hosting, so there is no Node route handler — this points at a small PHP
+   * script served from the same domain. Swap for a hosted form service
+   * (Web3Forms, Formspree) by changing this one value.
+   */
+  contactEndpoint: '/contact.php',
 } as const;
 
 export type NavLink = { href: string; label: string };
@@ -42,7 +49,7 @@ export const footerNav: { title: string; links: NavLink[] }[] = [
     ],
   },
   {
-    title: 'About ScamAlert',
+    title: 'About ScamAlert360',
     links: [
       { href: '/about-us', label: 'About Us' },
       { href: '/editorial-policy', label: 'Editorial Policy' },

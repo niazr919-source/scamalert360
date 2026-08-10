@@ -7,7 +7,7 @@ import { site } from '@/lib/site';
 
 const title = 'Editorial Policy: How We Research, Verify and Review Scam Guides';
 const description =
-  'Our sourcing standards, fact-checking process, expert review requirements, correction policy and AI disclosure for every guide published on ScamAlert.';
+  'Our sourcing standards, fact-checking process, expert review requirements, correction policy and AI disclosure for every guide published on ScamAlert360.';
 
 export const metadata: Metadata = {
   title,
@@ -34,7 +34,7 @@ export default function EditorialPolicyPage() {
         title="Editorial Policy"
         breadcrumb="Editorial Policy"
         updated="2026-07-14"
-        intro="ScamAlert covers subjects where inaccurate advice causes real financial harm. This page documents exactly how our guides are researched, sourced, reviewed and maintained."
+        intro="ScamAlert360 covers subjects where inaccurate advice causes real financial harm. This page documents exactly how our guides are researched, sourced, reviewed and maintained."
       >
         <h2>Scope and standard of care</h2>
         <p>
@@ -96,7 +96,7 @@ export default function EditorialPolicyPage() {
 
         <h2>Fact-checking</h2>
         <p>
-          Guides are published under the ScamAlert editorial byline. We are deliberate about
+          Guides are published under the ScamAlert360 editorial byline. We are deliberate about
           this: many consumer-finance sites invent authors and attach certifications nobody
           holds, which we regard as worse than an honest team byline. We claim a{' '}
           <strong>process</strong>, not credentials — and the process is one you can check,

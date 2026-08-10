@@ -29,6 +29,7 @@ export function SiteHeader() {
           </span>
           <span>
             Scam<span className="text-emerald">Alert</span>
+            <span className="text-navy-400 dark:text-navy-500">360</span>
           </span>
           <span className="sr-only">{site.name} home</span>
         </Link>

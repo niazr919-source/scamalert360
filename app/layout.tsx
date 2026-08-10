@@ -74,7 +74,7 @@ export const viewport: Viewport = {
  * Applies the stored/system theme before first paint so there is no flash of
  * the wrong theme. Kept tiny and inline deliberately.
  */
-const themeScript = `(function(){try{var t=localStorage.getItem('scamalert-theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',d)}catch(e){}})();`;
+const themeScript = `(function(){try{var t=localStorage.getItem('scamalert360-theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',d)}catch(e){}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

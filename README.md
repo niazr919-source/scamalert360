@@ -1,22 +1,24 @@
-# ScamAlert — scamalert.blog
+# ScamAlert360 — scamalert360.com
 
 A scam awareness and fraud prevention portal built with Next.js (App Router), TypeScript and Tailwind CSS. Built for ad-network approval and organic search, with attention to YMYL and E-E-A-T requirements.
+
+Ships as a **static HTML export** for Hostinger shared hosting — see [DEPLOY.md](DEPLOY.md) for the upload steps.
 
 ```bash
 npm install
 npm run dev     # http://localhost:3000
-npm run build   # production build
-npm start       # serve the build
+npm run build   # produces out/ — a static export, ready to upload
+npx serve out   # preview the export exactly as it will be served
 npm run typecheck
 ```
 
 ## What's here
 
-32 routes, all statically generated except `/api/contact`.
+32 routes, all statically generated — there is no server-rendered route in this build (see "Static export" below for why).
 
 | Area | Route | Notes |
 | --- | --- | --- |
-| Home | `/` | Hero, category hubs, latest guides, six universal rules |
+| Home | `/` | Hero, checker entry band, category hubs, latest guides, six universal rules |
 | Guide library | `/scams` | All 13 guides grouped by category |
 | Category hubs | `/scams/[category]` | 4 hubs |
 | Guides | `/scams/[category]/[slug]` | 13 guides, 1,668–2,909 words each |
@@ -24,7 +26,7 @@ npm run typecheck
 | Reporting | `/report-a-scam` | Official agency channels + 24h timeline |
 | E-E-A-T | `/about-us`, `/editorial-policy` | Standards, sourcing, conflict of interest |
 | Legal | `/privacy-policy`, `/terms-of-service` | GDPR/CCPA, educational-content disclaimer |
-| Contact | `/contact` | Validated form → `/api/contact` |
+| Contact | `/contact` | Validated form → `public/contact.php` (PHP, not a Next.js API route) |
 
 ### Guides and their primary keyword targets
 
@@ -44,9 +46,20 @@ npm run typecheck
 | Facebook Marketplace scams | everyday | facebook marketplace scam, google voice code scam |
 | Fake remote job & check scams | everyday | remote job check scam, fake check deposit fraud |
 
+## Static export — why, and what it costs
+
+`next.config.mjs` sets `output: 'export'` because Hostinger shared hosting serves plain files via Apache and doesn't keep a Node process running — `next start` and API route handlers don't work there. `npm run build` produces a self-contained `out/` folder instead.
+
+Two things a normal Next.js deploy gets for free had to move elsewhere as a result:
+
+- **Security headers.** `next.config.mjs`'s `headers()` needs a live server to run, so they're now set in `public/.htaccess` instead (HTTPS redirect, `X-Frame-Options`, etc.), which gets copied into `out/` on every build.
+- **The contact form's backend.** `app/api/contact/route.ts` is gone — static exports can't include Node route handlers. `public/contact.php` reproduces the same validation, honeypot and rate-limiting logic in PHP, which Hostinger can execute. `components/contact-form.tsx` posts to `site.contactEndpoint` (`/contact.php`, set in `lib/site.ts`) instead of `/api/contact`.
+
+If you ever move to a Node-capable host (a VPS, Vercel), both are easy to restore — see the bottom of [DEPLOY.md](DEPLOY.md).
+
 ## Authorship — read before adding contributors
 
-`content/authors.ts` ships a single honest identity: the **ScamAlert Editorial Team**. This is deliberate and load-bearing.
+`content/authors.ts` ships a single honest identity: the **ScamAlert360 Editorial Team**. This is deliberate and load-bearing.
 
 This site publishes YMYL financial-safety content. Search quality raters and ad-network reviewers check bylines against real, findable people, and a schema `hasCredential` claim is a machine-readable factual assertion. Inventing a contributor or attaching a certification nobody holds converts a soft E-E-A-T weakness into a *verifiable false statement* — which is worse than an honest team byline.
 
@@ -94,13 +107,12 @@ Injection logic is in `components/article-body.tsx`. Two guards keep placement c
 
 ## Before applying to ad networks
 
-1. **Deploy to scamalert.blog.** You can't apply from localhost. `lib/site.ts` already points at the domain — canonicals, sitemap and schema derive from it.
+1. **Deploy to scamalert360.com.** You can't apply from localhost — see [DEPLOY.md](DEPLOY.md). `lib/site.ts` already points at the domain; canonicals, sitemap and schema derive from it.
 2. **Add yourself as a named author** (see Authorship above). Highest-value single change.
 3. **Legal review.** `/privacy-policy` and `/terms-of-service` carry template notices. Have counsel review, and update the ad networks named in the privacy policy to match what you actually run.
-4. **Wire contact delivery.** `app/api/contact/route.ts` validates, rate-limits (3/min/IP) and honeypots, then logs. Add your email provider where the comment marks the send; keep the server-side validation.
+4. **Confirm the contact form actually delivers mail.** `public/contact.php` uses PHP's `mail()`, which is frequently unreliable on shared hosting — test it for real after deploying and check spam. A commented SMTP fallback is in the file.
 5. **Consent banner** before serving ads in the EU/EEA/UK — the privacy policy already commits to one.
 6. **Submit the sitemap** to Google Search Console and let the site get indexed. New domains get more scrutiny; a few weeks of history helps.
-7. **Shared rate-limit store** (Redis/Upstash) if you deploy multi-region — the current limiter is in-memory.
 
 ### Realistic platform expectations
 
@@ -116,10 +128,10 @@ Deep navy slate `#0F172A`, emerald `#10B981`, crimson `#EF4444`. Inter (body) an
 
 ## Verified
 
-- `npm run build` — 32 pages, zero errors; `tsc --noEmit` clean.
-- All 26 sitemap URLs return 200; all 29 unique internal links resolve.
+- `npm run build` — 32 pages exported to `out/`, zero errors; `tsc --noEmit` clean.
+- Static export served with `npx serve out`: all key routes (including the Suspense-wrapped risk checker) resolve 200, unknown paths 404 via the custom error page.
+- Sitemap (26 URLs) and robots.txt correctly reference `scamalert360.com`; no leftover references to any prior domain.
 - Article word counts 1,668–2,909.
 - No `hasCredential` claims anywhere in emitted schema; article author is `Organization`.
 - Every ad slot reserves non-zero height before fill; no horizontal overflow at 375px.
-- Contact API: valid → 200, bad email → 400, short message → 400, rate limit → 429.
 - No console errors in light or dark mode.

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { CheckCircle2, Loader2, Send, TriangleAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { site } from '@/lib/site';
 
 const TOPICS = [
   'Report a scam I encountered',
@@ -73,7 +74,9 @@ export function ContactForm() {
     setServerError('');
 
     try {
-      const response = await fetch('/api/contact', {
+      // The site is a static export with no Node server, so this posts to a
+      // PHP handler (public/contact.php) rather than a Next.js API route.
+      const response = await fetch(site.contactEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),

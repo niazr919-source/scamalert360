@@ -16,6 +16,7 @@ export function SiteFooter() {
                 <ShieldCheck className="h-5 w-5" aria-hidden="true" />
               </span>
               Scam<span className="-ml-2 text-emerald">Alert</span>
+              <span className="text-navy-400 dark:text-navy-500">360</span>
             </Link>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-navy-600 dark:text-navy-400">
               {site.tagline} Independent fraud prevention guidance, checked against primary
@@ -54,7 +55,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 rounded-xl border border-amber-300/60 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
-          <strong className="font-semibold">Important disclaimer:</strong> ScamAlert
+          <strong className="font-semibold">Important disclaimer:</strong> ScamAlert360
           publishes general consumer education. Nothing on this site is legal, financial,
           investment or tax advice, and reading it does not create a professional
           relationship. Fraud rules, dispute deadlines and liability limits change and vary

@@ -42,7 +42,7 @@ export interface Contributor {
 export const people: Record<string, Contributor> = {
   'editorial-team': {
     id: 'editorial-team',
-    name: 'ScamAlert Editorial Team',
+    name: 'ScamAlert360 Editorial Team',
     role: 'Fraud research and consumer protection reporting',
     bio: 'Our guides are researched and written in-house, then checked line by line against primary sources — the Federal Trade Commission, the FBI’s Internet Crime Complaint Center, the Consumer Financial Protection Bureau, and the federal regulations themselves. We do not cite other scam blogs, we do not take affiliate commissions, and we publish the odds of recovery honestly, including when they are poor.',
     expertise: [

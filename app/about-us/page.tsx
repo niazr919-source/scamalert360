@@ -6,9 +6,9 @@ import { JsonLd } from '@/components/ui';
 import { pageGraph, personSchema } from '@/lib/schema';
 import { site } from '@/lib/site';
 
-const title = 'About ScamAlert: Our Team, Standards and Mission';
+const title = 'About ScamAlert360: Our Team, Standards and Mission';
 const description =
-  'Who writes ScamAlert, what qualifies them, how we are funded, and the conflict of interest rules that govern our fraud prevention coverage.';
+  'Who writes ScamAlert360, what qualifies them, how we are funded, and the conflict of interest rules that govern our fraud prevention coverage.';
 
 export const metadata: Metadata = {
   title,
@@ -40,7 +40,7 @@ export default function AboutPage() {
     <>
       <JsonLd data={graph} />
       <LegalPage
-        title="About ScamAlert"
+        title="About ScamAlert360"
         breadcrumb="About Us"
         updated="2026-07-14"
         intro="We publish plain-English guidance on consumer fraud, traced to primary sources from US regulators and law enforcement — and we tell you plainly when a loss is unlikely to be recovered, or when a security product is not worth buying."
@@ -49,7 +49,7 @@ export default function AboutPage() {
         <p>
           Most scam advice fails at the moment it is needed. It is written in the abstract,
           it lists warning signs without explaining the mechanism, and it goes quiet exactly
-          where people need it most — after the money has already gone. ScamAlert exists
+          where people need it most — after the money has already gone. ScamAlert360 exists
           to close that gap.
         </p>
         <p>Every guide we publish is built around three commitments:</p>
@@ -74,7 +74,7 @@ export default function AboutPage() {
 
         <h2>Who we are</h2>
         <p>
-          Guides are published under the ScamAlert editorial byline. We want to be
+          Guides are published under the ScamAlert360 editorial byline. We want to be
           straightforward about what that means, because a great many sites in this niche are
           not: it means a small team researches and writes this material, and it means we will
           not invent contributors or attach professional certifications that nobody here
@@ -151,7 +151,7 @@ export default function AboutPage() {
 
         <h2>How we are funded</h2>
         <p>
-          ScamAlert is free to read and is funded by display advertising served through
+          ScamAlert360 is free to read and is funded by display advertising served through
           third-party ad networks. Advertising is what keeps the site accessible to people
           who often cannot afford to lose the money they came here about.
         </p>
@@ -170,7 +170,7 @@ export default function AboutPage() {
           &ldquo;security&rdquo; hardware pay generous commissions, and a great deal of
           published scam advice exists primarily to route readers toward those commissions.
         </p>
-        <p>We have structured ScamAlert to avoid that pressure:</p>
+        <p>We have structured ScamAlert360 to avoid that pressure:</p>
         <ul>
           <li>
             <strong>No affiliate commissions.</strong> We do not participate in affiliate
@@ -213,7 +213,7 @@ export default function AboutPage() {
 
         <h2>What we are not</h2>
         <p>
-          ScamAlert is a publisher of consumer education. We are not a law firm, a
+          ScamAlert360 is a publisher of consumer education. We are not a law firm, a
           financial advisory business, a government agency, or a fund recovery service. We
           cannot recover money on your behalf, contact your bank for you, or represent you in
           a dispute.

@@ -3,6 +3,10 @@ import { articles, articleHref } from '@/content';
 import { categories } from '@/content/categories';
 import { site } from '@/lib/site';
 
+// Required for `output: 'export'` — metadata routes need an explicit static
+// marker in this Next.js version or the export build fails.
+export const dynamic = 'force-static';
+
 const STATIC_PAGES: { path: string; priority: number; changeFrequency: 'daily' | 'weekly' | 'monthly' | 'yearly' }[] = [
   { path: '/', priority: 1, changeFrequency: 'daily' },
   { path: '/scams', priority: 0.9, changeFrequency: 'weekly' },

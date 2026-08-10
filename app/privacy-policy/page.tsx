@@ -7,7 +7,7 @@ import { site } from '@/lib/site';
 
 const title = 'Privacy Policy';
 const description =
-  'How ScamAlert collects, uses and protects your information, including cookies, third-party advertising, and your GDPR and CCPA rights.';
+  'How ScamAlert360 collects, uses and protects your information, including cookies, third-party advertising, and your GDPR and CCPA rights.';
 
 export const metadata: Metadata = {
   title,
