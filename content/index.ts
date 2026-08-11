@@ -12,6 +12,10 @@ import { article as pigButchering } from './articles/pig-butchering-investment-s
 import { article as governmentImposter } from './articles/irs-social-security-imposter-calls';
 import { article as marketplace } from './articles/facebook-marketplace-scams';
 import { article as giftCards } from './articles/gift-card-scams';
+import { article as sextortion } from './articles/sextortion-email-scam';
+import { article as creditFreeze } from './articles/how-to-freeze-your-credit';
+import { article as utilityDisconnection } from './articles/utility-disconnection-scam';
+import { article as medicareCard } from './articles/medicare-card-scam';
 
 /** Sorted newest-updated first, which drives the homepage "Latest guides" rail. */
 export const articles: Article[] = [
@@ -28,6 +32,10 @@ export const articles: Article[] = [
   governmentImposter,
   marketplace,
   giftCards,
+  sextortion,
+  creditFreeze,
+  utilityDisconnection,
+  medicareCard,
 ].sort((a, b) => (a.updated < b.updated ? 1 : -1));
 
 export function getArticle(category: string, slug: string): Article | undefined {
