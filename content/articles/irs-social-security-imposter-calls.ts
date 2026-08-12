@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'IRS & Social Security Scam Calls: Government Imposter Fraud',
   shortTitle: 'IRS & Social Security Scam Calls',
   description:
-    'A caller says your Social Security number is suspended or that the IRS has a warrant. Learn how government imposter scams work and what these agencies actually do.',
+    'A caller says your Social Security number is suspended or the IRS has a warrant. Learn how government imposter scams really work.',
   keywords: [
     'irs scam call',
     'social security scam call',

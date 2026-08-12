@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'Fake Remote Work & Check Deposit Scams: Red Flags for Job Seekers',
   shortTitle: 'Fake Remote Job & Check Scams',
   description:
-    'A remote job offer arrives with a check for home office equipment. Learn why "funds available" is not "check cleared", and how fake job scams extract money and identity data.',
+    'A remote job offer arrives with a check for home office equipment. Learn why "funds available" is not "check cleared."',
   keywords: [
     'remote job check scam',
     'fake check deposit fraud',

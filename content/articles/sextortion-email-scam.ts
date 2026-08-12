@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'Sextortion Email Scam: "I Have Your Password" Blackmail Explained',
   shortTitle: 'Sextortion Email Scam',
   description:
-    'An email says a hacker filmed you through your webcam and shows one of your real passwords. Here is why it is almost always an empty bluff — and exactly what to do.',
+    'An email says a hacker filmed you through your webcam and shows a real password. Here is why it is almost always an empty bluff, and exactly what to do.',
   keywords: [
     'sextortion email',
     'i have your password email scam',

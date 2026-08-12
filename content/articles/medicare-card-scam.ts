@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'Medicare Card Scam: Fake Calls About New Cards and Free Braces',
   shortTitle: 'Medicare Card Scam',
   description:
-    'A caller says you need a new Medicare card, or offers free braces or genetic testing, and asks for your Medicare number. Learn how these scams steal your benefits and identity.',
+    'A caller offers a new Medicare card, free braces or genetic testing, then asks for your Medicare number. Learn how the scam steals your identity.',
   keywords: [
     'medicare card scam',
     'medicare phone call scam',

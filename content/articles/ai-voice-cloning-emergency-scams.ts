@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'AI Voice Cloning Emergency Scams: How Fraudsters Impersonate Family',
   shortTitle: 'AI Voice Cloning Scams',
   description:
-    'A few seconds of public audio is enough to clone a relative’s voice. Learn how AI voice cloning emergency scams are built, why they defeat instinct, and the one habit that stops them.',
+    'A few seconds of public audio is enough to clone a relative’s voice. Learn how AI voice cloning scams work and the habit that stops them.',
   keywords: [
     'AI voice cloning scam',
     'grandkid bail scam AI',

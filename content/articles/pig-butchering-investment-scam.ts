@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'Pig Butchering Scam: How Crypto Romance Investment Fraud Works',
   shortTitle: 'Pig Butchering Investment Scam',
   description:
-    'A wrong-number text becomes a friendship, then an investment tip on a platform that shows fake profits. Learn how pig butchering works and why withdrawals always fail.',
+    'A wrong-number text becomes a friendship, then an investment tip on a platform showing fake profits. Learn how pig butchering works.',
   keywords: [
     'pig butchering scam',
     'crypto romance scam',

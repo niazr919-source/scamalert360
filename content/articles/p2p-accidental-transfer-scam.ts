@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'P2P Accidental Transfer Scam: Zelle, Venmo & Cash App Traps Explained',
   shortTitle: 'P2P Accidental Transfer Scam',
   description:
-    'Money arrives in your Venmo or Cash App "by mistake" and a stranger asks you to send it back. Here is why returning it costs you twice, and how P2P payment fraud really works.',
+    'Money arrives in your Venmo or Cash App "by mistake" and a stranger asks for it back. Here is why returning it costs you twice.',
   keywords: [
     'zelle accidental money scam',
     'venmo fake transfer',

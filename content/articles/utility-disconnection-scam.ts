@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'Utility Disconnection Scam: "Your Power Will Be Shut Off" Calls',
   shortTitle: 'Utility Disconnection Scam',
   description:
-    'A caller claiming to be your electric, gas or water company threatens to cut off service within the hour unless you pay immediately. Learn how the scam works and how to verify a real bill.',
+    'A caller claiming to be your utility threatens to cut off power within the hour unless you pay now. Learn how the scam works and how to verify a real bill.',
   keywords: [
     'utility disconnection scam',
     'electric company scam call',

@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'Unpaid Toll Text Scam: E-ZPass, SunPass & FasTrak Smishing',
   shortTitle: 'Unpaid Toll Text Scam',
   description:
-    'A text claims you owe a small unpaid toll and threatens a late fee. Learn why toll smishing became the most reported text scam, and how to check a real toll balance safely.',
+    'A text claims you owe a small unpaid toll and threatens a late fee. Learn why toll smishing is so common, and how to check your real toll balance safely.',
   keywords: [
     'unpaid toll text scam',
     'ezpass scam text',

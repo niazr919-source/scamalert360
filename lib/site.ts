@@ -3,7 +3,7 @@ export const site = {
   shortName: 'ScamAlert360',
   tagline: 'Recognize the scam. Recover the money. Report it properly.',
   description:
-    'Independent, primary-sourced guides to bank text scams, delivery and toll phishing, payment app traps, AI voice cloning and investment fraud — plus a free interactive Scam Risk Checker.',
+    'Independent, primary-sourced guides to bank scams, phishing, AI voice cloning and investment fraud — plus a free interactive Scam Risk Checker.',
   url: 'https://scamalert360.com',
   locale: 'en_US',
   email: 'editor@scamalert360.com',

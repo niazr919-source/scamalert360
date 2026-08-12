@@ -1,0 +1,219 @@
+{
+  "summary": {
+    "health_score": 66,
+    "codebase_score_when_deployed": 80,
+    "business_type": "Publisher / informational (YMYL — consumer financial safety)",
+    "audited": "2026-08-11",
+    "method": "Live curl crawl + local codebase inspection; no Playwright, CrUX, GSC, GA4, or backlink APIs available",
+    "top_findings": [
+      "CRITICAL: Live canonicals, robots.txt Host, and sitemap all reference the old domain scamalert.blog, not scamalert360.com",
+      "CRITICAL: Deployment disconnect — Hostinger serves old pre-rebrand code; last several commits (rebrand, Next 16, OG images, 4 guides) not live",
+      "HIGH: No named author for YMYL E-E-A-T (Organization byline only)",
+      "HIGH: No favicon (/favicon.ico 404)",
+      "MEDIUM-HIGH: Title tags 82-90 chars and meta descriptions up to 187 chars exceed SERP display limits"
+    ],
+    "quick_wins": [
+      "Fix Hostinger deployment so scamalert360.com serves the scamalert360 repo (fixes canonicals; ~66 -> ~80)",
+      "Add a favicon",
+      "Trim meta descriptions to <=155 chars",
+      "Use shortTitle for <title> tags to stay under ~60 chars",
+      "Add llms.txt for AI crawlers"
+    ]
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 45,
+      "codebase_score": 84,
+      "what_works": [
+        "HTTPS with valid Let's Encrypt cert; http->https redirect live (301)",
+        "Security headers present: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
+        "Clean URLs, single h1, html lang=en, viewport present, Mediapartners-Google allowed",
+        "Static prerender + CDN cache (x-nextjs-cache: HIT); dynamic sitemap and robots"
+      ],
+      "findings": [
+        {
+          "title": "Live canonicals point to wrong domain (scamalert.blog)",
+          "severity": "Critical",
+          "description": "Every live page canonical, plus robots.txt Host and the sitemap URL, reference scamalert.blog. Signals scamalert360.com pages as duplicates of another domain, suppressing indexing/ranking.",
+          "recommendation": "Deploy the current repo; canonicals already resolve to scamalert360.com in code."
+        },
+        {
+          "title": "Deployment disconnect — stale production code",
+          "severity": "Critical",
+          "description": "Live site is the old 13-guide 'ScamAlert' (scamalert.blog) build. Recent commits (rebrand, Next 16, HTTPS middleware, OG images, 4 new guides) are on GitHub but not deployed.",
+          "recommendation": "Confirm Hostinger deploys from github.com/niazr919-source/scamalert360 main and trigger a redeploy; verify a new guide URL returns 200."
+        },
+        {
+          "title": "No favicon / site icons",
+          "severity": "High",
+          "description": "/favicon.ico returns 404 and no app/icon.* exists. Google shows a favicon beside mobile results.",
+          "recommendation": "Add a branded icon (app/icon.tsx generated at build time)."
+        },
+        {
+          "title": "HSTS not present on live responses",
+          "severity": "Medium",
+          "description": "The HTTPS-redirect middleware (which sets a conservative HSTS header) is not deployed; live redirect appears to be Hostinger's default.",
+          "recommendation": "Deploy current code to add HSTS."
+        }
+      ]
+    },
+    {
+      "name": "Content Quality",
+      "score": 76,
+      "what_works": [
+        "17 guides, 1,600-2,900 words, primary-sourced (FTC/IC3/CFPB/Medicare) with visible sources",
+        "Non-thin, non-duplicated, useful; tables, checklists, recovery timelines, FAQs",
+        "Honest stances (e.g. RFID wallets not worth it); no fabricated credentials"
+      ],
+      "findings": [
+        {
+          "title": "No named author (E-E-A-T)",
+          "severity": "High",
+          "description": "All guides use an 'Editorial Team' Organization byline with no verifiable individual. YMYL content is weighted heavily on author expertise.",
+          "recommendation": "Add a real named author (name + public profile URL); schema/byline already support profileUrl and credentials."
+        }
+      ]
+    },
+    {
+      "name": "On-Page SEO",
+      "score": 55,
+      "codebase_score": 78,
+      "what_works": [
+        "Unique, keyword-aligned titles/descriptions per page",
+        "Single h1, logical heading hierarchy, semantic HTML",
+        "Strong internal linking (related grids, category cross-links, credit-freeze hub)",
+        "OpenGraph and Twitter Card meta present"
+      ],
+      "findings": [
+        {
+          "title": "Title tags exceed display length",
+          "severity": "Medium",
+          "description": "Guide titles run 82-90 chars (e.g. credit-freeze 82, sextortion 90). Google displays ~60. Keyword is front-loaded but the '| ScamAlert360' suffix truncates.",
+          "recommendation": "Use each article's shortTitle for the <title> tag, or shorten titles."
+        },
+        {
+          "title": "Meta descriptions over length",
+          "severity": "Medium",
+          "description": "Several run 166-187 chars; Google truncates ~155-160.",
+          "recommendation": "Trim to <=155 chars."
+        },
+        {
+          "title": "Homepage title is weak",
+          "severity": "Medium",
+          "description": "'Scam Awareness & Fraud Prevention Guides' (44 chars) omits the brand and leads with a generic phrase.",
+          "recommendation": "Lead with brand + primary keyword, e.g. 'ScamAlert360 - Spot Scams, Recover Money & Report Fraud'."
+        }
+      ]
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 90,
+      "what_works": [
+        "Per-page linked @graph: Article + BreadcrumbList + FAQPage + HowTo; site-wide Organization + WebSite",
+        "Article carries wordCount, dates, author, publisher, citations",
+        "Author emitted as Organization; no false hasCredential claims"
+      ],
+      "findings": [
+        {
+          "title": "Organization author limits author rich results",
+          "severity": "Low",
+          "description": "With no named person, author-level rich features are limited.",
+          "recommendation": "When a real author is added, emit Person with sameAs to their profile."
+        }
+      ]
+    },
+    {
+      "name": "Performance (CWV)",
+      "score": 85,
+      "what_works": [
+        "Static prerender + CDN cache; zero content images (strong LCP)",
+        "Ad slots reserve height (CLS protection); First Load JS ~103-127 KB"
+      ],
+      "findings": [
+        {
+          "title": "No field data available",
+          "severity": "Info",
+          "description": "No CrUX/Lighthouse in this environment; scores are lab/inspection estimates.",
+          "recommendation": "Validate via PageSpeed Insights and Search Console once deployed; watch INP due to the interactive risk-checker."
+        }
+      ]
+    },
+    {
+      "name": "AI Search Readiness",
+      "score": 65,
+      "what_works": [
+        "Semantic HTML, explicit FAQ blocks, primary-source citations aid AI citation",
+        "Schema gives machines an unambiguous page read"
+      ],
+      "findings": [
+        {
+          "title": "No llms.txt",
+          "severity": "Medium",
+          "description": "No /llms.txt to guide AI crawlers.",
+          "recommendation": "Add a concise llms.txt summarizing the site and key guides."
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "score": 72,
+      "what_works": [
+        "No content images by design -> no alt-text debt, fast pages",
+        "Auto-generated OG social images added in codebase (not yet live)"
+      ],
+      "findings": [
+        {
+          "title": "No favicon",
+          "severity": "High",
+          "description": "The one real image gap; see Technical.",
+          "recommendation": "Add a branded favicon/icon."
+        }
+      ]
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 1: Critical Fixes",
+        "timeframe": "Week 1",
+        "items": [
+          "Fix Hostinger deployment so scamalert360.com serves the scamalert360 repo [You]",
+          "Verify live canonicals + robots + sitemap now read scamalert360.com [You]"
+        ]
+      },
+      {
+        "name": "Phase 2: High-Impact Improvements",
+        "timeframe": "Weeks 1-2",
+        "items": [
+          "Submit to Google Search Console + Bing and submit sitemap [You]",
+          "Add a favicon [Code]",
+          "Add a named author for E-E-A-T [You + Code]",
+          "Tighten title tags (use shortTitle) and trim meta descriptions; improve homepage title [Code]"
+        ]
+      },
+      {
+        "name": "Phase 3: Content & Authority",
+        "timeframe": "Month 2",
+        "items": [
+          "Publish 1-2 new guides per week to build topical breadth [Code + You]",
+          "Add llms.txt for AI search [Code]",
+          "Earn a few quality backlinks (resource pages, genuine forum answers, local news) [You]"
+        ]
+      },
+      {
+        "name": "Phase 4: Monitoring & Iteration",
+        "timeframe": "Ongoing",
+        "items": [
+          "Watch Search Console weekly (impressions first, then queries/pages) [You]",
+          "Validate Core Web Vitals via PageSpeed Insights; watch INP [You]",
+          "Re-audit after deployment is fixed to confirm the score jump [Code]"
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "screenshots_dir": "screenshots/ (not generated — no Playwright in environment)"
+  }
+}

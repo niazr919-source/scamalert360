@@ -21,7 +21,10 @@ import { ReportingButtons } from '@/components/content-blocks';
 import { site } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'Scam Awareness & Fraud Prevention Guides',
+  // `absolute` bypasses the layout's `%s | ScamAlert360` template so the
+  // brand appears once, leading — the SEO-recommended position for a
+  // homepage title rather than trailing after a generic phrase.
+  title: { absolute: 'ScamAlert360 — Spot Scams, Recover Money, Report Fraud' },
   description: site.description,
   alternates: { canonical: '/' },
 };

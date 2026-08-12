@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'Gift Card Scams: Why Fraudsters Ask for Them & Card Draining',
   shortTitle: 'Gift Card Scams & Draining',
   description:
-    'Nobody legitimate is ever paid in gift cards. Learn why fraudsters insist on them, how in-store card draining works, and what to do in the first hour after paying.',
+    'Nobody legitimate is paid in gift cards. Learn why fraudsters insist on them, how card draining works, and what to do after paying.',
   keywords: [
     'gift card scam',
     'gift card draining',

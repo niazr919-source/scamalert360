@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'How to Freeze Your Credit (Free) at All Three Bureaus: Step by Step',
   shortTitle: 'How to Freeze Your Credit',
   description:
-    'A credit freeze is free, reversible, and the single strongest way to stop identity thieves opening accounts in your name. Here is exactly how to do it at Equifax, Experian and TransUnion.',
+    'A credit freeze is free and reversible — the strongest way to stop identity thieves opening accounts in your name. Here is how to freeze all three bureaus.',
   keywords: [
     'how to freeze your credit',
     'credit freeze free',

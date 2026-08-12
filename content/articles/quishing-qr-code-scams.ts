@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'Quishing Alert: Malicious QR Code Scams in Public Parking & Restaurants',
   shortTitle: 'QR Code (Quishing) Scams',
   description:
-    'Fake QR code stickers on parking meters, restaurant tables and package slips route you to convincing payment clones. Learn how quishing works and how to check a code before you scan.',
+    'Fake QR code stickers on parking meters and restaurant tables route you to convincing payment clones. Learn how quishing works.',
   keywords: [
     'QR code payment scam',
     'fake parking QR code',

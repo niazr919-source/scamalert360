@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'USPS Text Scam: "Your Package Could Not Be Delivered" Explained',
   shortTitle: 'USPS Package Delivery Text Scam',
   description:
-    'A text says your USPS package is held for an incomplete address and asks for a small redelivery fee. Here is how the scam works, why the fee is not the point, and what to do.',
+    'A text says your USPS package needs a small redelivery fee to release it. Here is how the scam works, why the fee is not the point, and what to do.',
   keywords: [
     'usps text scam',
     'package delivery scam text',

@@ -44,9 +44,14 @@ export async function generateMetadata({
 
   const path = articleHref(article);
   const author = getPerson(article.authorId);
+  // The <title> tag needs to fit Google's ~60-char SERP display, so it uses
+  // shortTitle where one exists. The full, descriptive `article.title` is
+  // still used for the on-page <h1> and for OpenGraph/Twitter cards, which
+  // have more room and read better with the complete headline.
+  const metaTitle = article.shortTitle ?? article.title;
 
   return {
-    title: article.title,
+    title: metaTitle,
     description: article.description,
     keywords: article.keywords,
     authors: [{ name: author.name }],

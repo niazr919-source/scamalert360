@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'Bank Fraud Alert Text Scam: How Smishing Works & What to Do Next',
   shortTitle: 'Bank Fraud Alert Text Scam',
   description:
-    'A fake bank fraud alert text is the opening move in a bank impersonation scam. Learn how smishing works, the three requests that are always fraud, and the recovery steps that still work.',
+    'A fake bank fraud alert text is the opening move in a bank impersonation scam. Learn how smishing works and how to recover.',
   keywords: [
     'bank fraud alert text',
     'fake bank sms refund',

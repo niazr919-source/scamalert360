@@ -6,7 +6,7 @@ export const article: Article = {
   title: 'Fake Virus Warning Popups: How Tech Support Scams Really Work',
   shortTitle: 'Tech Support Popup Scam',
   description:
-    'A full-screen "Microsoft security alert" with a siren and a phone number is not a virus detection. Learn what the popup actually is and how to close it safely.',
+    'A full-screen "Microsoft security alert" with a siren is not a virus detection. Learn what the popup actually is and how to close it safely.',
   keywords: [
     'microsoft security warning scam',
     'fake virus warning popup',
