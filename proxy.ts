@@ -3,16 +3,21 @@ import { NextResponse, type NextRequest } from 'next/server';
 /**
  * Forces HTTPS and applies HSTS.
  *
+ * (This is the Next.js 16 "proxy" convention — the direct successor to the
+ * old `middleware.ts`. Renamed to clear the deprecation warning Next.js 16
+ * prints for the middleware file name, which was the only non-clean line in
+ * the production build log.)
+ *
  * The site has a valid TLS certificate, but the host also answers plain HTTP
  * on port 80 without redirecting — so any request that arrives over http://
- * is served insecurely and the browser shows "Not Secure". This middleware
- * 308-redirects those requests to the https:// equivalent.
+ * is served insecurely and the browser shows "Not Secure". This 308-redirects
+ * those requests to the https:// equivalent.
  *
  * Behind Hostinger's proxy the Node process sees the original scheme in the
  * `x-forwarded-proto` header, not in `request.url` (which is always the
  * internal http origin). So the check reads that header rather than the URL.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const proto = request.headers.get('x-forwarded-proto');
 
   // Only redirect when we can positively confirm the request came in over
@@ -41,7 +46,7 @@ export const config = {
   /*
    * Run on everything except Next.js internals and static assets — those are
    * already same-origin and don't need the scheme check, and skipping them
-   * keeps the middleware off the hot path for every image and script.
+   * keeps the proxy off the hot path for every image and script.
    */
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
