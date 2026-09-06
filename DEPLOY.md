@@ -53,6 +53,48 @@ to check — open the browser devtools Network tab and look for 404s under
 `server.js` reads `PORT` from the environment and binds `0.0.0.0`, so a
 platform-assigned port works without configuration.
 
+## Why every build-time package is in `dependencies`
+
+`package.json` has **no `devDependencies` section**, and that is deliberate.
+
+Managed Node platforms commonly run their install step with
+`NODE_ENV=production` (or `npm install --omit=dev`), which skips
+`devDependencies` entirely. Next.js needs `tailwindcss`, `postcss` and
+`autoprefixer` to compile the CSS, and `typescript` plus the `@types/*`
+packages to run its TypeScript step — all at **build** time. If those live in
+`devDependencies` and the host omits them, the build dies immediately with:
+
+```
+Error: Turbopack build failed with 1 error:
+./app/globals.css
+Error: Cannot find module 'tailwindcss'
+```
+
+This was reproduced exactly (`npm ci --omit=dev && npm run build` → the error
+above) and confirmed fixed by the move (same commands → clean build, server
+serves every route and asset).
+
+Moving them costs nothing at runtime: `output: 'standalone'` traces only the
+modules the running server actually imports, so none of these end up in the
+deployed bundle. Do not "tidy" them back into `devDependencies`.
+
+`engines.node` is declared as `>=20.9.0` (Next.js 16's own floor) so the
+platform provisions a compatible runtime rather than guessing.
+
+## If the build still fails: memory
+
+The build peaks at roughly **1.4 GB** of Node memory across its processes
+(measured locally). If the deploy log shows the build being killed with no
+error message, `Killed`, `SIGKILL`, `exit code 137`, or `JavaScript heap out
+of memory`, the container is running out of RAM rather than hitting a code
+problem. Options, in order of preference:
+
+1. Move to a plan with more build memory.
+2. Reduce build parallelism by adding `experimental: { cpus: 1 }` to
+   `next.config.mjs` — measured at ~1.23 GB, so it helps but does not
+   transform the number; most of the usage is the compiler itself, not the
+   workers.
+
 ## A note on the HTTPS redirect
 
 `proxy.ts` 308-redirects plain-HTTP requests to HTTPS by reading the
