@@ -5,6 +5,16 @@ const nextConfig = {
   compress: true,
 
   /*
+   * Development only. Next.js 16 blocks requests for `/_next/*` dev resources
+   * whose Host differs from the one the browser was opened on, so previewing
+   * `next dev` through anything but plain `localhost` returns 403 for every
+   * client chunk — the page renders server-side but never hydrates. Listing
+   * the loopback hosts here allows the preview browser to load them. Ignored
+   * entirely by `next build` / `next start`.
+   */
+  allowedDevOrigins: ['127.0.0.1', 'localhost'],
+
+  /*
    * Hostinger's Git-connected hosting for this project (per the "Framework:
    * Next.js" / "Node version: 22.x" dashboard) runs a real Node process and
    * builds Next.js natively — it is not the classic Apache/public_html

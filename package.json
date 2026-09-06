@@ -5,8 +5,8 @@
   "description": "ScamAlert360 — scam awareness and fraud prevention portal (scamalert360.com)",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "next build && node scripts/postbuild.mjs",
+    "start": "node .next/standalone/server.js",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },

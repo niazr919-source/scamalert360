@@ -18,6 +18,13 @@ import { NextResponse, type NextRequest } from 'next/server';
  * internal http origin). So the check reads that header rather than the URL.
  */
 export function proxy(request: NextRequest) {
+  // `next dev` sets `x-forwarded-proto: http` on every request, and there is
+  // no TLS listener on localhost — so in development the check below would
+  // 308 every page to https://localhost/ and nothing would ever load.
+  if (process.env.NODE_ENV === 'development') {
+    return NextResponse.next();
+  }
+
   const proto = request.headers.get('x-forwarded-proto');
 
   // Only redirect when we can positively confirm the request came in over

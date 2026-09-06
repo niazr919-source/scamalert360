@@ -16,11 +16,60 @@ platform does that for you on every push to `main`.
    runs `npm install && npm run build`, then starts the app with
    `npm run start` (the "Build and output settings: Default" shown on the
    dashboard maps to the `build`/`start` scripts in `package.json` — don't
-   rename those).
+   rename those). What those two scripts *do* is described in the next
+   section; both differ from stock Next.js on purpose.
 3. Progress shows under **Deployments** → **Last deployment**; **Logs: View**
    is where build or runtime errors actually show up if something fails.
 4. **Redeploy** re-runs the same build without a new push — useful after
    changing an environment variable, which doesn't itself trigger a deploy.
+
+## What `build` and `start` actually run — and why
+
+`next.config.mjs` sets `output: 'standalone'`, which produces a
+self-contained `.next/standalone/` tree with its own `server.js` and a
+minimal `node_modules`. That was added because the platform's Next.js preset
+exposes no editable start-command field, which is characteristic of PaaS
+integrations that run `node server.js` rather than `next start`. Keeping it
+means two stock commands had to change:
+
+| Script | Command | Why not the stock one |
+| --- | --- | --- |
+| `build` | `next build && node scripts/postbuild.mjs` | `next build` alone leaves the standalone tree incomplete — see below |
+| `start` | `node .next/standalone/server.js` | `next start` is **not compatible** with `output: 'standalone'`; Next.js 16 prints a warning telling you to run the standalone server instead |
+
+**The postbuild step is not optional.** Next.js deliberately does not copy
+`.next/static` or `public/` into `.next/standalone/`, because it assumes a
+CDN will serve them. Hostinger does not — it only runs the Node process.
+Without the copy, the deployed site answers **200 for every page and 404 for
+every CSS and JS file**: the HTML arrives, nothing else does, and the result
+is unstyled and non-interactive. `scripts/postbuild.mjs` copies both
+directories into the standalone tree using plain Node (no dependency, works
+on both Windows and Linux).
+
+If the live site ever appears as raw unstyled text, this is the first thing
+to check — open the browser devtools Network tab and look for 404s under
+`/_next/static/`.
+
+`server.js` reads `PORT` from the environment and binds `0.0.0.0`, so a
+platform-assigned port works without configuration.
+
+## A note on the HTTPS redirect
+
+`proxy.ts` 308-redirects plain-HTTP requests to HTTPS by reading the
+`x-forwarded-proto` header. Worth knowing:
+
+- **It depends on Hostinger's reverse proxy setting that header to `https`
+  on TLS requests.** Practically every reverse proxy does, and the redirect
+  has been verified to behave correctly for both `http` and `https` values.
+  But if the live site ever ends up in a redirect loop (`ERR_TOO_MANY_REDIRECTS`),
+  this is the cause: the proxy would be forwarding HTTPS requests without
+  that header, so the app cannot tell they were already secure. The fix in
+  that case is to remove the redirect block from `proxy.ts` and let the host
+  handle HTTP→HTTPS itself.
+- **It is skipped entirely in development**, because `next dev` sets
+  `x-forwarded-proto: http` on every request and there is no TLS listener on
+  localhost — without the guard, `npm run dev` 308s every page to
+  `https://localhost/` and nothing loads at all.
 
 There is nothing to upload by hand. If you ever used `npm run build` locally
 expecting an `out/` folder to drag into a file manager — that was the

@@ -7,21 +7,37 @@ Deployed on Hostinger's Git-connected Node hosting (auto-deploys on push to `mai
 ```bash
 npm install
 npm run dev     # http://localhost:3000
-npm run build   # production build (.next/)
+npm run build   # production build + postbuild asset copy (see below)
 npm start       # serve the build, same as Hostinger runs in production
 npm run typecheck
 ```
 
+### Why `build` and `start` are not the stock Next.js commands
+
+`next.config.mjs` sets `output: 'standalone'`, which the host needs (see
+[DEPLOY.md](DEPLOY.md)). Two consequences that are easy to get wrong:
+
+- **`next start` is not compatible with `standalone`** — Next.js 16 prints a
+  warning saying to run `node .next/standalone/server.js` instead. So `start`
+  does exactly that. It reads `PORT` and binds `0.0.0.0`, which is what a
+  platform-managed Node process needs.
+- **`next build` does not put the browser assets inside `.next/standalone/`.**
+  Next.js assumes a CDN serves `.next/static` and `public/`. Hostinger does
+  not — it only runs the Node process. Left alone, every page answers 200 and
+  every CSS and JS file answers 404, so the site deploys as unstyled,
+  non-interactive HTML. `scripts/postbuild.mjs` copies both directories in;
+  `build` chains it so a plain `npm run build` is always deployable.
+
 ## What's here
 
-32 routes: 31 statically generated at build time, plus one dynamic server route (`/api/contact`) that needs a live Node process — which is exactly what Hostinger's hosting here provides.
+39 routes: 38 statically generated at build time, plus one dynamic server route (`/api/contact`) that needs a live Node process — which is exactly what Hostinger's hosting here provides.
 
 | Area | Route | Notes |
 | --- | --- | --- |
 | Home | `/` | Hero, checker entry band, category hubs, latest guides, six universal rules |
-| Guide library | `/scams` | All 13 guides grouped by category |
+| Guide library | `/scams` | All 17 guides grouped by category |
 | Category hubs | `/scams/[category]` | 4 hubs |
-| Guides | `/scams/[category]/[slug]` | 13 guides, 1,668–2,909 words each |
+| Guides | `/scams/[category]/[slug]` | 17 guides, 1,668–2,909 words each |
 | Interactive tool | `/tool/scam-risk-checker` | 4-step client-side risk calculator |
 | Reporting | `/report-a-scam` | Official agency channels + 24h timeline |
 | E-E-A-T | `/about-us`, `/editorial-policy` | Standards, sourcing, conflict of interest |
@@ -45,6 +61,10 @@ npm run typecheck
 | AI voice cloning scams | ai-cyber | AI voice cloning scam, deepfake voice call fraud |
 | Facebook Marketplace scams | everyday | facebook marketplace scam, google voice code scam |
 | Fake remote job & check scams | everyday | remote job check scam, fake check deposit fraud |
+| Sextortion "I have your password" email | ai-cyber | sextortion email, bitcoin blackmail email |
+| How to freeze your credit (free) | banking | how to freeze your credit, credit freeze vs fraud alert |
+| Utility disconnection scam calls | banking | utility disconnection scam, power shut off scam |
+| Medicare card scam | everyday | medicare card scam, new medicare card scam |
 
 ## Deployment model
 
@@ -116,7 +136,7 @@ Injection logic is in `components/article-body.tsx`. Two guards keep placement c
 
 | | Status | Why |
 | --- | --- | --- |
-| AdSense | Plausible once live + indexed | 13 in-depth guides is a reasonable base; more is better |
+| AdSense | Plausible once live + indexed | 17 in-depth guides is a reasonable base; more is better |
 | Ezoic | Most realistic near-term | Lowest bar, content review is the main gate |
 | Mediavine | Traffic-gated (~50k sessions/mo) | Nothing about the build changes this |
 
@@ -126,10 +146,10 @@ Deep navy slate `#0F172A`, emerald `#10B981`, crimson `#EF4444`. Inter (body) an
 
 ## Verified
 
-- `npm run build` — 32 routes, zero errors; `tsc --noEmit` clean.
+- `npm run build` — 39 routes, zero errors; `tsc --noEmit` clean.
 - `npm start` (the same command Hostinger runs) serves all key routes at 200, `/api/contact` returns `{"ok":true}` on a valid POST, unknown paths 404.
 - Security headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`) confirmed present on live responses via `next.config.mjs`'s `headers()`.
-- Sitemap (26 URLs) and robots.txt correctly reference `scamalert360.com`; no leftover references to any prior domain.
+- Sitemap (30 URLs) and robots.txt correctly reference `scamalert360.com`; no leftover references to any prior domain.
 - Article word counts 1,668–2,909.
 - No `hasCredential` claims anywhere in emitted schema; article author is `Organization`.
 - Every ad slot reserves non-zero height before fill; no horizontal overflow at 375px.
