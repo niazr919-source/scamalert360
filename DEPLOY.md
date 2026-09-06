@@ -95,28 +95,34 @@ problem. Options, in order of preference:
    transform the number; most of the usage is the compiler itself, not the
    workers.
 
-## A note on the HTTPS redirect
+## Why this app does not redirect http to https
 
-`proxy.ts` 308-redirects plain-HTTP requests to HTTPS by reading the
-`x-forwarded-proto` header. Worth knowing:
+`proxy.ts` sets HSTS but deliberately does **not** redirect plain HTTP to
+HTTPS. An earlier version did, and it broke every deployment for months while
+the build logs stayed completely clean — `next build` succeeded, 39 routes
+generated, no errors, and the dashboard still reported "Deployment build
+failed".
 
-- **It depends on Hostinger's reverse proxy setting that header to `https`
-  on TLS requests.** Practically every reverse proxy does, and the redirect
-  has been verified to behave correctly for both `http` and `https` values.
-  But if the live site ever ends up in a redirect loop (`ERR_TOO_MANY_REDIRECTS`),
-  this is the cause: the proxy would be forwarding HTTPS requests without
-  that header, so the app cannot tell they were already secure. The fix in
-  that case is to remove the redirect block from `proxy.ts` and let the host
-  handle HTTP→HTTPS itself.
-- **It is skipped entirely in development**, because `next dev` sets
-  `x-forwarded-proto: http` on every request and there is no TLS listener on
-  localhost — without the guard, `npm run dev` 308s every page to
-  `https://localhost/` and nothing loads at all.
+The cause: the platform probes the Node process directly over plain HTTP to
+decide whether the app came up. Next.js sets `x-forwarded-proto: http` on
+those requests itself, so the redirect fired and answered the probe with
+`308 -> https://<internal-host>/` rather than `200`. That address is not
+reachable from the probe, so the health check never passed and the deploy was
+failed after the build had already succeeded — which is why the timing looked
+odd: about 20 seconds of install and build, then roughly a minute of waiting.
 
-There is nothing to upload by hand. If you ever used `npm run build` locally
-expecting an `out/` folder to drag into a file manager — that was the
-static-export path from an earlier, incorrect assumption about the hosting
-type. It's not needed here.
+Scheme upgrading belongs at the edge anyway. Hostinger already answers plain
+HTTP with `301 -> https://scamalert360.com/` before a request reaches this
+process, so the app-level redirect was redundant as well as harmful. The edge
+can see the real scheme; this process cannot.
+
+**Do not reintroduce an HTTP→HTTPS redirect here.** If the "Not Secure"
+warning that originally motivated it ever comes back, fix it in the Hostinger
+domain/SSL settings, not in application code.
+
+HSTS is still sent from here because the edge does not send it. Browsers
+ignore the header on plain-HTTP responses, so it is emitted unconditionally
+and depends on no proxy headers at all.
 
 ## Checklist for a working deployment
 
