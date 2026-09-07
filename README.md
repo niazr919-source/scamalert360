@@ -7,26 +7,10 @@ Deployed on Hostinger's Git-connected Node hosting (auto-deploys on push to `mai
 ```bash
 npm install
 npm run dev     # http://localhost:3000
-npm run build   # production build + postbuild asset copy (see below)
+npm run build   # production build (.next/)
 npm start       # serve the build, same as Hostinger runs in production
 npm run typecheck
 ```
-
-### Why `build` and `start` are not the stock Next.js commands
-
-`next.config.mjs` sets `output: 'standalone'`, which the host needs (see
-[DEPLOY.md](DEPLOY.md)). Two consequences that are easy to get wrong:
-
-- **`next start` is not compatible with `standalone`** — Next.js 16 prints a
-  warning saying to run `node .next/standalone/server.js` instead. So `start`
-  does exactly that. It reads `PORT` and binds `0.0.0.0`, which is what a
-  platform-managed Node process needs.
-- **`next build` does not put the browser assets inside `.next/standalone/`.**
-  Next.js assumes a CDN serves `.next/static` and `public/`. Hostinger does
-  not — it only runs the Node process. Left alone, every page answers 200 and
-  every CSS and JS file answers 404, so the site deploys as unstyled,
-  non-interactive HTML. `scripts/postbuild.mjs` copies both directories in;
-  `build` chains it so a plain `npm run build` is always deployable.
 
 ## What's here
 

@@ -23,35 +23,32 @@ platform does that for you on every push to `main`.
 4. **Redeploy** re-runs the same build without a new push — useful after
    changing an environment variable, which doesn't itself trigger a deploy.
 
-## What `build` and `start` actually run — and why
+## This is a stock Next.js app — keep it that way
 
-`next.config.mjs` sets `output: 'standalone'`, which produces a
-self-contained `.next/standalone/` tree with its own `server.js` and a
-minimal `node_modules`. That was added because the platform's Next.js preset
-exposes no editable start-command field, which is characteristic of PaaS
-integrations that run `node server.js` rather than `next start`. Keeping it
-means two stock commands had to change:
+`package.json` runs plain `next build` and `next start`, and
+`next.config.mjs` sets no `output` override. That matches the dashboard's
+"Build and output settings: **Default**" for the Next.js framework preset,
+and it is the configuration the platform documents and tests.
 
-| Script | Command | Why not the stock one |
-| --- | --- | --- |
-| `build` | `next build && node scripts/postbuild.mjs` | `next build` alone leaves the standalone tree incomplete — see below |
-| `start` | `node .next/standalone/server.js` | `next start` is **not compatible** with `output: 'standalone'`; Next.js 16 prints a warning telling you to run the standalone server instead |
+It is worth recording what was tried instead, because it looked reasonable
+and cost a lot of failed deploys:
 
-**The postbuild step is not optional.** Next.js deliberately does not copy
-`.next/static` or `public/` into `.next/standalone/`, because it assumes a
-CDN will serve them. Hostinger does not — it only runs the Node process.
-Without the copy, the deployed site answers **200 for every page and 404 for
-every CSS and JS file**: the HTML arrives, nothing else does, and the result
-is unstyled and non-interactive. `scripts/postbuild.mjs` copies both
-directories into the standalone tree using plain Node (no dependency, works
-on both Windows and Linux).
+`output: 'standalone'` was enabled on the inference that the platform ran
+`node server.js`, because its dashboard exposes no editable start-command
+field. That was never confirmed against documentation, and **no deployment
+ever succeeded with it**. It also brought two problems of its own:
 
-If the live site ever appears as raw unstyled text, this is the first thing
-to check — open the browser devtools Network tab and look for 404s under
-`/_next/static/`.
+- `next start` refuses to pair with standalone output in Next.js 16, so the
+  start script had to be changed too.
+- `next build` does not copy `.next/static` or `public/` into
+  `.next/standalone/` — it assumes a CDN serves them. Without a postbuild
+  step to copy them in, every page answers 200 and **every CSS and JS file
+  answers 404**, so the site serves as unstyled, non-interactive HTML.
 
-`server.js` reads `PORT` from the environment and binds `0.0.0.0`, so a
-platform-assigned port works without configuration.
+Both of those are now moot, and the postbuild script is gone. If a future
+change ever does require standalone output, that copy step is mandatory —
+recover it from the commit "Fix standalone deploy serving 404s for every CSS
+and JS file".
 
 ## Why every build-time package is in `dependencies`
 

@@ -28,17 +28,18 @@ const nextConfig = {
    * for Hostinger") has the output:'export' config to revive.
    */
   /*
-   * `standalone` output: the platform's Next.js preset exposes no editable
-   * "start command" field, which is characteristic of PaaS integrations that
-   * run `node server.js` from a self-contained standalone build rather than
-   * `next start`. Without this, `next build` succeeds but the platform has
-   * nothing to actually launch afterward — the exact "build passes, nothing
-   * ever starts, empty runtime logs" symptom seen in production. This traces
-   * only the files each route actually needs into `.next/standalone/`,
-   * including a minimal `node_modules`, and writes `server.js` as the entry
-   * point. Harmless for platforms that instead run `next start` directly.
+   * No `output` override: this is a stock Next.js server build (`next build`
+   * then `next start`), which is what the host's "Build and output settings:
+   * Default" preset expects.
+   *
+   * `output: 'standalone'` was tried here previously, on the inference that
+   * the platform ran `node server.js` because its dashboard exposes no
+   * editable start-command field. That was never confirmed, and no deploy
+   * ever succeeded with it. It also actively conflicts with `next start`,
+   * which Next.js 16 refuses to pair with standalone output, and it required
+   * a postbuild step to copy `.next/static` and `public/` into the
+   * standalone tree, without which every CSS and JS file 404s. See DEPLOY.md.
    */
-  output: 'standalone',
   images: {
     formats: ['image/avif', 'image/webp'],
   },
